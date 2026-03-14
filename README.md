@@ -1,4 +1,4 @@
-# claude-voice-bridge
+# claude-voice-mcp
 
 ![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)
 ![License](https://img.shields.io/badge/License-MIT-green)
@@ -14,7 +14,7 @@ A fully voice-enabled interface for the [Claude Desktop](https://claude.ai/downl
 
 ## What does it do?
 
-**claude-voice-bridge** turns Claude Desktop into a voice assistant. You speak into your microphone, your speech is transcribed and sent to Claude, and Claude's response is read aloud to you — all automatically.
+**claude-voice-mcp** turns Claude Desktop into a voice assistant. You speak into your microphone, your speech is transcribed and sent to Claude, and Claude's response is read aloud to you — all automatically.
 
 The system consists of two components that work alongside the Claude Desktop app:
 
@@ -97,12 +97,12 @@ Before you start, make sure you have:
 
 **Option A — Using Git:**
 ```bash
-git clone https://github.com/LeszkovszkiAnita/claude-voice-bridge.git
-cd claude-voice-bridge
+git clone https://github.com/LeszkovszkiAnita/claude-voice-mcp.git
+cd claude-voice-mcp
 ```
 
 **Option B — Manual download:**
-Download the ZIP from GitHub, extract it to a folder (e.g., `C:\Users\YourName\Desktop\claude-voice-bridge`).
+Download the ZIP from GitHub, extract it to a folder (e.g., `C:\Users\YourName\Desktop\claude-voice-mcp`).
 
 ### Step 2: Install Python dependencies
 
@@ -177,17 +177,17 @@ This tells Claude Desktop about the `speak` tool so Claude can use it.
   "mcpServers": {
     "voice-bridge": {
       "command": "python",
-      "args": ["C:\\full\\path\\to\\claude-voice-bridge\\tts_server.py"]
+      "args": ["C:\\full\\path\\to\\claude-voice-mcp\\tts_server.py"]
     }
   }
 }
 ```
 
-**Important:** Replace `C:\\full\\path\\to\\claude-voice-bridge\\tts_server.py` with the actual path to the file on your computer. Use **double backslashes** (`\\`) in the path.
+**Important:** Replace `C:\\full\\path\\to\\claude-voice-mcp\\tts_server.py` with the actual path to the file on your computer. Use **double backslashes** (`\\`) in the path.
 
 For example, if you put the project on your Desktop:
 ```json
-"args": ["C:\\Users\\YourName\\Desktop\\claude-voice-bridge\\tts_server.py"]
+"args": ["C:\\Users\\YourName\\Desktop\\claude-voice-mcp\\tts_server.py"]
 ```
 
 > **Tip:** If the `python` command doesn't work, use the full Python path instead, e.g., `"command": "C:\\Python312\\python.exe"`. You can find yours by running `where python` in a terminal.
@@ -224,7 +224,7 @@ Set WshShell = CreateObject("WScript.Shell")
 Set fso = CreateObject("Scripting.FileSystemObject")
 
 pythonExe = "C:\Python312\python.exe"
-scriptPath = "C:\Users\YourName\Desktop\claude-voice-bridge\stt_companion.py"
+scriptPath = "C:\Users\YourName\Desktop\claude-voice-mcp\stt_companion.py"
 
 ' Check if companion is already running
 Set objWMI = GetObject("winmgmts:\\.\root\cimv2")
@@ -301,7 +301,7 @@ End If
 ## File Structure
 
 ```
-claude-voice-bridge/
+claude-voice-mcp/
 ├── README.md              — This file (English)
 ├── README_HU.md           — Hungarian documentation
 ├── LICENSE                 — MIT License

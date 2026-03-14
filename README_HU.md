@@ -1,4 +1,4 @@
-# claude-voice-bridge
+# claude-voice-mcp
 
 ![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)
 ![License](https://img.shields.io/badge/License-MIT-green)
@@ -14,7 +14,7 @@ Teljes hangvezérlés a [Claude Desktop](https://claude.ai/download) alkalmazás
 
 ## Mit csinál?
 
-A **claude-voice-bridge** hangasszisztenssé alakítja a Claude Desktop alkalmazást. Beszélsz a mikrofonba, a rendszer átírja szöveggé és elküldi Claude-nak, Claude válasza pedig hangosan felolvasódik — mindezt automatikusan.
+A **claude-voice-mcp** hangasszisztenssé alakítja a Claude Desktop alkalmazást. Beszélsz a mikrofonba, a rendszer átírja szöveggé és elküldi Claude-nak, Claude válasza pedig hangosan felolvasódik — mindezt automatikusan.
 
 A rendszer két komponensből áll, amelyek a Claude Desktop mellett futnak:
 
@@ -97,12 +97,12 @@ Mielőtt kezdenél, győződj meg róla, hogy megvan:
 
 **A opció — Git használatával:**
 ```bash
-git clone https://github.com/LeszkovszkiAnita/claude-voice-bridge.git
-cd claude-voice-bridge
+git clone https://github.com/LeszkovszkiAnita/claude-voice-mcp.git
+cd claude-voice-mcp
 ```
 
 **B opció — Kézi letöltés:**
-Töltsd le a ZIP fájlt a GitHubról, csomagold ki egy mappába (pl. `C:\Users\Neved\Desktop\claude-voice-bridge`).
+Töltsd le a ZIP fájlt a GitHubról, csomagold ki egy mappába (pl. `C:\Users\Neved\Desktop\claude-voice-mcp`).
 
 ### 2. lépés: Python függőségek telepítése
 
@@ -177,17 +177,17 @@ Ez mondja meg a Claude Desktop-nak, hogy létezik a `speak` eszköz és használ
   "mcpServers": {
     "voice-bridge": {
       "command": "python",
-      "args": ["C:\\teljes\\elérési\\út\\claude-voice-bridge\\tts_server.py"]
+      "args": ["C:\\teljes\\elérési\\út\\claude-voice-mcp\\tts_server.py"]
     }
   }
 }
 ```
 
-**Fontos:** Cseréld ki a `C:\\teljes\\elérési\\út\\claude-voice-bridge\\tts_server.py` részt a tényleges fájl elérési útra a gépeden. Használj **dupla backslash-t** (`\\`) az útvonalban!
+**Fontos:** Cseréld ki a `C:\\teljes\\elérési\\út\\claude-voice-mcp\\tts_server.py` részt a tényleges fájl elérési útra a gépeden. Használj **dupla backslash-t** (`\\`) az útvonalban!
 
 Például, ha az Asztalra tetted a projektet:
 ```json
-"args": ["C:\\Users\\Neved\\Desktop\\claude-voice-bridge\\tts_server.py"]
+"args": ["C:\\Users\\Neved\\Desktop\\claude-voice-mcp\\tts_server.py"]
 ```
 
 > **Tipp:** Ha a `python` parancs nem működik, használd a teljes Python útvonalat, pl. `"command": "C:\\Python312\\python.exe"`. A sajátodat megtalálod a `where python` paranccsal a terminálban.
@@ -224,7 +224,7 @@ Set WshShell = CreateObject("WScript.Shell")
 Set fso = CreateObject("Scripting.FileSystemObject")
 
 pythonExe = "C:\Python312\python.exe"
-scriptPath = "C:\Users\Neved\Desktop\claude-voice-bridge\stt_companion.py"
+scriptPath = "C:\Users\Neved\Desktop\claude-voice-mcp\stt_companion.py"
 
 ' Ellenorizzuk, fut-e mar a companion
 Set objWMI = GetObject("winmgmts:\\.\root\cimv2")
@@ -301,7 +301,7 @@ End If
 ## Fájlstruktúra
 
 ```
-claude-voice-bridge/
+claude-voice-mcp/
 ├── README.md              — Dokumentáció (angol)
 ├── README_HU.md           — Ez a fájl (magyar)
 ├── LICENSE                 — MIT Licensz
