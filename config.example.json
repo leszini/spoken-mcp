@@ -18,9 +18,9 @@
   "mode": "vad_always",
   "vad": {
     "aggressiveness": 2,
-    "silence_timeout": 1.5,
+    "silence_timeout": 3.0,
     "speech_threshold": 3,
-    "volume_threshold": 0
+    "volume_threshold": 800
   },
   "auto_paste": true,
   "auto_enter": false

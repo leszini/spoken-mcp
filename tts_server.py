@@ -1,9 +1,9 @@
 """
 MCP TTS Server — Claude Desktop voice bridge
-ElevenLabs Text-to-Speech integrációval.
+with ElevenLabs Text-to-Speech integration.
 
-Claude a 'speak' tool-lal szöveget küld ide,
-a szerver pedig ElevenLabs-on keresztül felolvassa.
+Claude sends text here via the 'speak' tool,
+and the server reads it aloud through ElevenLabs.
 """
 
 import json
@@ -12,100 +12,107 @@ import os
 import io
 import tempfile
 import threading
+import time
 from pathlib import Path
+
+# TTS playback queue — only one voice can play at a time
+_tts_lock = threading.Lock()
 
 from mcp.server.fastmcp import FastMCP
 
-# --- Konfiguráció betöltése ---
+# --- Load configuration ---
 
 CONFIG_PATH = Path(__file__).parent / "config.json"
 
 def load_config() -> dict:
-    """Betölti a config.json fájlt."""
+    """Loads the config.json file."""
     if not CONFIG_PATH.exists():
-        print("HIBA: config.json nem található! Másold a config.example.json-t config.json-ként és töltsd ki.", file=sys.stderr)
+        print("ERROR: config.json not found! Copy config.example.json as config.json and fill it in.", file=sys.stderr)
         sys.exit(1)
     with open(CONFIG_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 config = load_config()
 
-# --- ElevenLabs kliens inicializálása ---
+# --- Initialize ElevenLabs client ---
 
 from elevenlabs import ElevenLabs
 
 elevenlabs_client = ElevenLabs(api_key=config["elevenlabs_api_key"])
 
-# --- MCP szerver létrehozása ---
+# --- Create MCP server ---
 
-# --- Pygame mixer egyszer inicializálása (elkerüli a pattogást) ---
+# --- Initialize pygame mixer once (avoids popping sounds) ---
 
 import pygame
 pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
 
-# --- MCP szerver létrehozása ---
+# --- Create MCP server ---
 
 mcp = FastMCP(name="voice-bridge")
 
 
 @mcp.tool()
 def speak(text: str, voice: str | None = None) -> str:
-    """Szöveget hangosan felolvas ElevenLabs TTS segítségével.
+    """Reads text aloud using ElevenLabs TTS.
 
     Args:
-        text: A felolvasandó szöveg
-        voice: Opcionális voice ID (ha nem adod meg, a config.json-ból veszi)
+        text: The text to read aloud
+        voice: Optional voice ID (if not provided, uses the one from config.json)
 
     Returns:
-        Státusz üzenet
+        Status message
     """
     try:
-        # Voice ID: paraméterből vagy configból
+        # Voice ID: from parameter or config
         voice_id = voice or config["tts"]["voice_id"]
         model_id = config["tts"].get("model_id", "eleven_multilingual_v2")
         language_code = config["tts"].get("language_code", "hu")
 
-        print(f"TTS: '{text[:50]}...' felolvasása ({voice_id})", file=sys.stderr)
+        print(f"TTS: reading aloud '{text[:50]}...' ({voice_id})", file=sys.stderr)
 
-        # Háttérszálban indítjuk a TTS-t — a tool AZONNAL visszatér Claude-nak
-        # Így Claude nem vár a lejátszás végére, a szöveges válasz rögtön megjelenik
+        # Start TTS in a background thread — the tool returns IMMEDIATELY to Claude
+        # This way Claude doesn't wait for playback to finish, the text response appears right away
         def _tts_background():
-            try:
-                # MP3 formátum — jobb hangminőség
-                audio_stream = elevenlabs_client.text_to_speech.convert(
-                    text=text,
-                    voice_id=voice_id,
-                    model_id=model_id,
-                    language_code=language_code,
-                    output_format="mp3_44100_128",
-                )
+            with _tts_lock:  # Queues the calls — two voices won't overlap
+                try:
+                    # MP3 format — better audio quality
+                    audio_stream = elevenlabs_client.text_to_speech.convert(
+                        text=text,
+                        voice_id=voice_id,
+                        model_id=model_id,
+                        language_code=language_code,
+                        output_format="mp3_44100_128",
+                    )
 
-                # Audio összegyűjtése
-                audio_bytes = b""
-                for chunk in audio_stream:
-                    if isinstance(chunk, bytes):
-                        audio_bytes += chunk
+                    # Collect audio
+                    audio_bytes = b""
+                    for chunk in audio_stream:
+                        if isinstance(chunk, bytes):
+                            audio_bytes += chunk
 
-                if audio_bytes:
-                    _play_audio_mp3(audio_bytes)
-            except Exception as e:
-                print(f"TTS háttér hiba: {e}", file=sys.stderr)
+                    if audio_bytes:
+                        _play_audio_mp3(audio_bytes)
+                    else:
+                        print("TTS: empty audio received from API!", file=sys.stderr)
+                except Exception as e:
+                    print(f"TTS background error: {e}", file=sys.stderr)
 
         threading.Thread(target=_tts_background, daemon=True).start()
 
-        return f"Felolvastam: {text[:100]}{'...' if len(text) > 100 else ''}"
+        return f"Read aloud: {text[:100]}{'...' if len(text) > 100 else ''}"
 
     except Exception as e:
-        error_msg = f"TTS hiba: {str(e)}"
+        error_msg = f"TTS error: {str(e)}"
         print(error_msg, file=sys.stderr)
         return error_msg
 
 
 def _play_audio_mp3(audio_bytes: bytes):
-    """MP3 audio lejátszása pygame-mel."""
+    """Plays MP3 audio using pygame."""
     import tempfile
 
-    # Temp fájlba mentjük az MP3-at
+    # Save the MP3 to a temp file
     with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as tmp:
         tmp.write(audio_bytes)
         tmp_path = tmp.name
@@ -117,7 +124,7 @@ def _play_audio_mp3(audio_bytes: bytes):
             pygame.time.wait(100)
         pygame.mixer.music.unload()
     except Exception as e:
-        print(f"Lejátszás hiba: {e}", file=sys.stderr)
+        print(f"Playback error: {e}", file=sys.stderr)
     finally:
         try:
             os.unlink(tmp_path)
@@ -125,8 +132,8 @@ def _play_audio_mp3(audio_bytes: bytes):
             pass
 
 
-# --- Szerver indítása ---
+# --- Start server ---
 
 if __name__ == "__main__":
-    print("Voice Bridge MCP szerver indul...", file=sys.stderr)
+    print("Voice Bridge MCP server starting...", file=sys.stderr)
     mcp.run(transport="stdio")
