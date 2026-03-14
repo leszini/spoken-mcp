@@ -20,7 +20,8 @@
     "aggressiveness": 2,
     "silence_timeout": 3.0,
     "speech_threshold": 3,
-    "volume_threshold": 800
+    "volume_threshold": 800,
+    "min_duration": 0.5
   },
   "auto_paste": true,
   "auto_enter": false

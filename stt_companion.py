@@ -377,12 +377,12 @@ def setup_mute_toggle():
 
 def setup_vad_toggle():
     """Configurable key + VAD listening toggle."""
-    mute_key_name = config.get("mute_key", config.get("hotkey", "caps lock"))
-    mute_key_vk = get_key_vk(mute_key_name)
+    hotkey_name = config.get("hotkey", "caps lock")
+    hotkey_vk = get_key_vk(hotkey_name)
 
     def on_press(key):
         try:
-            if key_matches(key, mute_key_vk):
+            if key_matches(key, hotkey_vk):
                 toggle_vad_listening()
         except Exception:
             pass
@@ -390,7 +390,7 @@ def setup_vad_toggle():
     listener = pynput_kb.Listener(on_press=on_press)
     listener.daemon = True
     listener.start()
-    print(f"🎤 VAD toggle: {mute_key_name} = listening on/off", file=sys.stderr)
+    print(f"🎤 VAD toggle: {hotkey_name} = listening on/off", file=sys.stderr)
 
 
 def start_vad_listener(always_on=False):

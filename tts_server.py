@@ -40,8 +40,6 @@ from elevenlabs import ElevenLabs
 
 elevenlabs_client = ElevenLabs(api_key=config["elevenlabs_api_key"])
 
-# --- Create MCP server ---
-
 # --- Initialize pygame mixer once (avoids popping sounds) ---
 
 import pygame
@@ -49,7 +47,7 @@ pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
 
 # --- Create MCP server ---
 
-mcp = FastMCP(name="voice-bridge")
+mcp = FastMCP(name="claude-voice-mcp")
 
 
 @mcp.tool()
@@ -110,7 +108,6 @@ def speak(text: str, voice: str | None = None) -> str:
 
 def _play_audio_mp3(audio_bytes: bytes):
     """Plays MP3 audio using pygame."""
-    import tempfile
 
     # Save the MP3 to a temp file
     with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as tmp:

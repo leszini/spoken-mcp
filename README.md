@@ -144,7 +144,8 @@ pip install -r requirements.txt
     "aggressiveness": 2,
     "silence_timeout": 3.0,
     "speech_threshold": 3,
-    "volume_threshold": 800
+    "volume_threshold": 800,
+    "min_duration": 0.5
   },
   "auto_paste": true,
   "auto_enter": false
@@ -175,7 +176,7 @@ This tells Claude Desktop about the `speak` tool so Claude can use it.
 ```json
 {
   "mcpServers": {
-    "voice-mcp": {
+    "claude-voice-mcp": {
       "command": "python",
       "args": ["C:\\full\\path\\to\\claude-voice-mcp\\tts_server.py"]
     }
@@ -293,6 +294,7 @@ End If
 | `vad.silence_timeout` | Seconds of silence before ending a recording | `3.0` |
 | `vad.speech_threshold` | Minimum consecutive speech frames before recording starts | `3` |
 | `vad.volume_threshold` | Minimum volume level to count as speech (0 = disabled) | `800` |
+| `vad.min_duration` | Minimum recording duration in seconds (filters out coughs, breaths) | `0.5` |
 | `auto_paste` | Automatically paste transcription into the active window | `true` |
 | `auto_enter` | Automatically press Enter after pasting (hands-free mode) | `false` |
 
