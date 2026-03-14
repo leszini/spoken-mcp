@@ -1,0 +1,27 @@
+{
+  "elevenlabs_api_key": "YOUR_API_KEY_HERE",
+  "tts": {
+    "voice_id": "YOUR_VOICE_ID_HERE",
+    "model_id": "eleven_v3",
+    "language_code": "hu"
+  },
+  "stt": {
+    "model_id": "scribe_v1",
+    "language_code": "hu"
+  },
+  "audio": {
+    "sample_rate": 16000,
+    "channels": 1
+  },
+  "hotkey": "caps lock",
+  "mute_key": "f4",
+  "mode": "vad_always",
+  "vad": {
+    "aggressiveness": 2,
+    "silence_timeout": 1.5,
+    "speech_threshold": 3,
+    "volume_threshold": 0
+  },
+  "auto_paste": true,
+  "auto_enter": false
+}
