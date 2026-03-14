@@ -1,4 +1,4 @@
-# claude-voice-mcp
+# spoken-mcp
 
 ![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)
 ![License](https://img.shields.io/badge/License-MIT-green)
@@ -14,7 +14,7 @@ Teljes hangvezérlés a [Claude Desktop](https://claude.ai/download) alkalmazás
 
 ## Mit csinál?
 
-A **claude-voice-mcp** hangasszisztenssé alakítja a Claude Desktop alkalmazást. Beszélsz a mikrofonba, a rendszer átírja szöveggé és elküldi Claude-nak, Claude válasza pedig hangosan felolvasódik — mindezt automatikusan.
+A **spoken-mcp** hangasszisztenssé alakítja a Claude Desktop alkalmazást. Beszélsz a mikrofonba, a rendszer átírja szöveggé és elküldi Claude-nak, Claude válasza pedig hangosan felolvasódik — mindezt automatikusan.
 
 A rendszer két komponensből áll, amelyek a Claude Desktop mellett futnak:
 
@@ -97,12 +97,12 @@ Mielőtt kezdenél, győződj meg róla, hogy megvan:
 
 **A opció — Git használatával:**
 ```bash
-git clone https://github.com/LeszkovszkiAnita/claude-voice-mcp.git
-cd claude-voice-mcp
+git clone https://github.com/LeszkovszkiAnita/spoken-mcp.git
+cd spoken-mcp
 ```
 
 **B opció — Kézi letöltés:**
-Töltsd le a ZIP fájlt a GitHubról, csomagold ki egy mappába (pl. `C:\Users\Neved\Desktop\claude-voice-mcp`).
+Töltsd le a ZIP fájlt a GitHubról, csomagold ki egy mappába (pl. `C:\Users\Neved\Desktop\spoken-mcp`).
 
 ### 2. lépés: Python függőségek telepítése
 
@@ -176,19 +176,19 @@ Ez mondja meg a Claude Desktop-nak, hogy létezik a `speak` eszköz és használ
 ```json
 {
   "mcpServers": {
-    "claude-voice-mcp": {
+    "spoken-mcp": {
       "command": "python",
-      "args": ["C:\\teljes\\elérési\\út\\claude-voice-mcp\\tts_server.py"]
+      "args": ["C:\\teljes\\elérési\\út\\spoken-mcp\\tts_server.py"]
     }
   }
 }
 ```
 
-**Fontos:** Cseréld ki a `C:\\teljes\\elérési\\út\\claude-voice-mcp\\tts_server.py` részt a tényleges fájl elérési útra a gépeden. Használj **dupla backslash-t** (`\\`) az útvonalban!
+**Fontos:** Cseréld ki a `C:\\teljes\\elérési\\út\\spoken-mcp\\tts_server.py` részt a tényleges fájl elérési útra a gépeden. Használj **dupla backslash-t** (`\\`) az útvonalban!
 
 Például, ha az Asztalra tetted a projektet:
 ```json
-"args": ["C:\\Users\\Neved\\Desktop\\claude-voice-mcp\\tts_server.py"]
+"args": ["C:\\Users\\Neved\\Desktop\\spoken-mcp\\tts_server.py"]
 ```
 
 > **Tipp:** Ha a `python` parancs nem működik, használd a teljes Python útvonalat, pl. `"command": "C:\\Python312\\python.exe"`. A sajátodat megtalálod a `where python` paranccsal a terminálban.
@@ -216,7 +216,7 @@ Egy rendszertálca ikon jelenik meg az óra mellett (lehet, hogy a `^` nyílra k
 Készíthetsz egy parancsikont az Asztalra, amivel egyetlen dupla kattintással indíthatod a companion-t — konzolablak nélkül, indítás/leállítás/újraindítás gombokkal.
 
 1. Jobb klikk az Asztalon → **Új** → **Szöveges dokumentum**
-2. Nevezd el `Voice Bridge.vbs`-nek (figyelj, hogy a kiterjesztés `.vbs` legyen, ne `.vbs.txt` — ehhez szükség lehet a "Fájlnévkiterjesztések megjelenítése" bekapcsolására a Windows Intézőben)
+2. Nevezd el `Spoken MCP.vbs`-nek (figyelj, hogy a kiterjesztés `.vbs` legyen, ne `.vbs.txt` — ehhez szükség lehet a "Fájlnévkiterjesztések megjelenítése" bekapcsolására a Windows Intézőben)
 3. Jobb klikk a fájlon → **Szerkesztés** (vagy megnyitás Jegyzettömbbel)
 4. Illeszd be az alábbi tartalmat, cseréld ki az útvonalakat a sajátjaidra:
 
@@ -225,7 +225,7 @@ Set WshShell = CreateObject("WScript.Shell")
 Set fso = CreateObject("Scripting.FileSystemObject")
 
 pythonExe = "C:\Python312\python.exe"
-scriptPath = "C:\Users\Neved\Desktop\claude-voice-mcp\stt_companion.py"
+scriptPath = "C:\Users\Neved\Desktop\spoken-mcp\stt_companion.py"
 
 ' Ellenorizzuk, fut-e mar a companion
 Set objWMI = GetObject("winmgmts:\\.\root\cimv2")
@@ -234,18 +234,18 @@ Set processes = objWMI.ExecQuery("SELECT * FROM Win32_Process WHERE CommandLine 
 alreadyRunning = (processes.Count > 0)
 
 If alreadyRunning Then
-    msg = "Voice Bridge mar fut!" & vbCrLf & vbCrLf & _
+    msg = "Spoken MCP mar fut!" & vbCrLf & vbCrLf & _
           "STOP = Abort gomb" & vbCrLf & _
           "RESTART = Retry gomb" & vbCrLf & _
           "FUT TOVABB = Ignore gomb"
-    result = MsgBox(msg, vbAbortRetryIgnore + vbQuestion, "Voice Bridge")
+    result = MsgBox(msg, vbAbortRetryIgnore + vbQuestion, "Spoken MCP")
 
     If result = vbAbort Then
         ' STOP
         For Each proc In processes
             proc.Terminate()
         Next
-        MsgBox "Voice Bridge leallitva.", vbInformation, "Voice Bridge"
+        MsgBox "Spoken MCP leallitva.", vbInformation, "Spoken MCP"
     ElseIf result = vbRetry Then
         ' RESTART
         For Each proc In processes
@@ -253,18 +253,18 @@ If alreadyRunning Then
         Next
         WScript.Sleep 1000
         WshShell.Run """" & pythonExe & """ """ & scriptPath & """", 0, False
-        MsgBox "Voice Bridge ujrainditva!", vbInformation, "Voice Bridge"
+        MsgBox "Spoken MCP ujrainditva!", vbInformation, "Spoken MCP"
     End If
 Else
     WshShell.Run """" & pythonExe & """ """ & scriptPath & """", 0, False
-    MsgBox "Voice Bridge elinditva!" & vbCrLf & vbCrLf & _
+    MsgBox "Spoken MCP elinditva!" & vbCrLf & vbCrLf & _
            "A talcan (ora mellett) talald az ikont." & vbCrLf & _
            "Kattints ujra erre az ikonra a leallitashoz.", _
-           vbInformation, "Voice Bridge"
+           vbInformation, "Spoken MCP"
 End If
 ```
 
-5. Mentsd el és zárd be. Dupla kattintás a `Voice Bridge.vbs`-re az indításhoz!
+5. Mentsd el és zárd be. Dupla kattintás a `Spoken MCP.vbs`-re az indításhoz!
 
 **Hogyan működik a parancsikon:**
 - **Első indítás:** Elindítja a companion-t a háttérben (konzolablak nélkül) és megjelenít egy megerősítést
@@ -303,7 +303,7 @@ End If
 ## Fájlstruktúra
 
 ```
-claude-voice-mcp/
+spoken-mcp/
 ├── README.md              — Dokumentáció (angol)
 ├── README_HU.md           — Ez a fájl (magyar)
 ├── LICENSE                 — MIT Licensz
@@ -348,12 +348,6 @@ claude-voice-mcp/
 | Átírás zajleírásokat tartalmaz, pl. "(zene)" | Ez automatikusan szűrve van. Ha mégis előfordul, növeld a `vad.aggressiveness` értéket 3-ra |
 | Több példány fut egyszerre | A companion beépített egypéldány-védelemmel rendelkezik. Zárd be az összes `python.exe` folyamatot és indítsd újra |
 | `webrtcvad` telepítés sikertelen | Használd helyette: `pip install webrtcvad-wheels` |
-
----
-
-## Készítők
-
-A teljes kódbázist — mindkét Python szkriptet, a konfigurációt, a dokumentációt és a projekt architektúrát — Claude tervezte és írta a [Claude Code](https://claude.ai/claude-code) segítségével, ami az Anthropic ágens kódolási eszköze.
 
 ---
 

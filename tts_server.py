@@ -1,5 +1,5 @@
 """
-MCP TTS Server — Claude Desktop voice bridge
+Spoken MCP — TTS Server for Claude Desktop
 with ElevenLabs Text-to-Speech integration.
 
 Claude sends text here via the 'speak' tool,
@@ -47,7 +47,7 @@ pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
 
 # --- Create MCP server ---
 
-mcp = FastMCP(name="claude-voice-mcp")
+mcp = FastMCP(name="spoken-mcp")
 
 
 @mcp.tool()
@@ -132,5 +132,5 @@ def _play_audio_mp3(audio_bytes: bytes):
 # --- Start server ---
 
 if __name__ == "__main__":
-    print("Voice Bridge MCP server starting...", file=sys.stderr)
+    print("Spoken MCP server starting...", file=sys.stderr)
     mcp.run(transport="stdio")

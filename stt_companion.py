@@ -38,10 +38,10 @@ from elevenlabs import ElevenLabs
 
 # --- Single-instance protection (Windows named mutex) ---
 # If an instance is already running, the new one exits automatically.
-_mutex_name = "Global\\VoiceBridgeSTTCompanion"
+_mutex_name = "Global\\SpokenMCPSTTCompanion"
 _mutex_handle = ctypes.windll.kernel32.CreateMutexW(None, True, _mutex_name)
 if ctypes.windll.kernel32.GetLastError() == 183:  # ERROR_ALREADY_EXISTS
-    print("Voice Bridge is already running! Only one instance allowed.", file=sys.stderr)
+    print("Spoken MCP is already running! Only one instance allowed.", file=sys.stderr)
     ctypes.windll.kernel32.CloseHandle(_mutex_handle)
     sys.exit(0)
 
@@ -130,7 +130,7 @@ def start_recording():
     # Update tray icon to red
     if tray_icon:
         tray_icon.icon = load_icon("active")
-        tray_icon.title = "Voice Bridge — Recording..."
+        tray_icon.title = "Spoken MCP — Recording..."
 
     print("🎙️ Recording started...", file=sys.stderr)
 
@@ -161,13 +161,13 @@ def stop_recording():
     # Reset tray icon to grey
     if tray_icon:
         tray_icon.icon = load_icon("idle")
-        tray_icon.title = "Voice Bridge — Transcribing..."
+        tray_icon.title = "Spoken MCP — Transcribing..."
 
     # Concatenate audio frames
     if not audio_frames:
         print("No audio recorded.", file=sys.stderr)
         if tray_icon:
-            tray_icon.title = "Voice Bridge — Ready"
+            tray_icon.title = "Spoken MCP — Ready"
         return
 
     audio_data = np.concatenate(audio_frames, axis=0)
@@ -207,7 +207,7 @@ def _transcribe_and_paste(wav_buffer: io.BytesIO):
         if not text:
             print("Could not recognize any text.", file=sys.stderr)
             if tray_icon:
-                tray_icon.title = "Voice Bridge — Could not understand"
+                tray_icon.title = "Spoken MCP — Could not understand"
             return
 
         # Filter out parenthesized "sound descriptions" — e.g. "(ominous music)", "(rock music)"
@@ -217,7 +217,7 @@ def _transcribe_and_paste(wav_buffer: io.BytesIO):
         if not filtered:
             print(f"⏭️ Background noise description only, skipped: {text}", file=sys.stderr)
             if tray_icon:
-                tray_icon.title = "Voice Bridge — Background noise filtered"
+                tray_icon.title = "Spoken MCP — Background noise filtered"
             return
         text = filtered
 
@@ -262,12 +262,12 @@ def _transcribe_and_paste(wav_buffer: io.BytesIO):
                 pass
 
         if tray_icon:
-            tray_icon.title = "Voice Bridge — Ready"
+            tray_icon.title = "Spoken MCP — Ready"
 
     except Exception as e:
         print(f"STT error: {e}", file=sys.stderr)
         if tray_icon:
-            tray_icon.title = f"Voice Bridge — Error: {str(e)[:30]}"
+            tray_icon.title = f"Spoken MCP — Error: {str(e)[:30]}"
     finally:
         transcribing = False
 
@@ -331,12 +331,12 @@ def toggle_vad_listening():
         print("🔊 VAD listening ON — speak!", file=sys.stderr)
         if tray_icon:
             tray_icon.icon = load_icon("listening")
-            tray_icon.title = "Voice Bridge — Listening, speak!"
+            tray_icon.title = "Spoken MCP — Listening, speak!"
     else:
         print("🔇 VAD listening OFF", file=sys.stderr)
         if tray_icon:
             tray_icon.icon = load_icon("idle")
-            tray_icon.title = "Voice Bridge — Caps Lock = start listening"
+            tray_icon.title = "Spoken MCP — Caps Lock = start listening"
 
 
 def toggle_mute():
@@ -349,12 +349,12 @@ def toggle_mute():
         print(f"🔇 Microphone MUTED — press {mute_key_name} to unmute", file=sys.stderr)
         if tray_icon:
             tray_icon.icon = load_icon("idle")
-            tray_icon.title = f"Voice Bridge — MUTED ({mute_key_name} = unmute)"
+            tray_icon.title = f"Spoken MCP — MUTED ({mute_key_name} = unmute)"
     else:
         print("🔊 Microphone ACTIVE — listening!", file=sys.stderr)
         if tray_icon:
             tray_icon.icon = load_icon("listening")
-            tray_icon.title = f"Voice Bridge — Listening ({mute_key_name} = mute)"
+            tray_icon.title = f"Spoken MCP — Listening ({mute_key_name} = mute)"
 
 
 def setup_mute_toggle():
@@ -472,7 +472,7 @@ def start_vad_listener(always_on=False):
                             audio_frames = []
                             if tray_icon:
                                 tray_icon.icon = load_icon("active")
-                                tray_icon.title = "Voice Bridge — Speech detected..."
+                                tray_icon.title = "Spoken MCP — Speech detected..."
                             print("🎙️ Speech detected, recording...", file=sys.stderr)
 
                         if recording_started:
@@ -505,7 +505,7 @@ def start_vad_listener(always_on=False):
 
                             if tray_icon:
                                 tray_icon.icon = load_icon("idle")
-                                tray_icon.title = "Voice Bridge — Transcribing..."
+                                tray_icon.title = "Spoken MCP — Transcribing..."
                             print("⏹️ Silence detected, transcribing...", file=sys.stderr)
 
                             if audio_frames:
@@ -559,7 +559,7 @@ def create_tray():
     icon_image = load_icon("idle")
 
     menu = pystray.Menu(
-        pystray.MenuItem("Voice Bridge — STT Companion", None, enabled=False),
+        pystray.MenuItem("Spoken MCP — STT Companion", None, enabled=False),
         pystray.Menu.SEPARATOR,
         pystray.MenuItem(f"Mode: {mode_label}", None, enabled=False),
         pystray.MenuItem(f"Key: {key_label}", None, enabled=False),
@@ -570,9 +570,9 @@ def create_tray():
     )
 
     tray_icon = pystray.Icon(
-        name="voice-bridge",
+        name="spoken-mcp",
         icon=icon_image,
-        title=f"Voice Bridge — {key_label}",
+        title=f"Spoken MCP — {key_label}",
         menu=menu,
     )
 
@@ -593,7 +593,7 @@ def main():
     mode = config.get("mode", "push_to_talk")
 
     print("=" * 40, file=sys.stderr)
-    print("Voice Bridge — STT Companion", file=sys.stderr)
+    print("Spoken MCP — STT Companion", file=sys.stderr)
     if mode == "vad":
         print("Mode: VAD + Caps Lock toggle", file=sys.stderr)
         print("Caps Lock -> listening ON -> speak -> silence -> sends -> listening OFF", file=sys.stderr)

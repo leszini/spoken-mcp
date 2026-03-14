@@ -1,4 +1,4 @@
-# claude-voice-mcp
+# spoken-mcp
 
 ![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)
 ![License](https://img.shields.io/badge/License-MIT-green)
@@ -14,7 +14,7 @@ A fully voice-enabled interface for the [Claude Desktop](https://claude.ai/downl
 
 ## What does it do?
 
-**claude-voice-mcp** turns Claude Desktop into a voice assistant. You speak into your microphone, your speech is transcribed and sent to Claude, and Claude's response is read aloud to you — all automatically.
+**spoken-mcp** turns Claude Desktop into a voice assistant. You speak into your microphone, your speech is transcribed and sent to Claude, and Claude's response is read aloud to you — all automatically.
 
 The system consists of two components that work alongside the Claude Desktop app:
 
@@ -97,12 +97,12 @@ Before you start, make sure you have:
 
 **Option A — Using Git:**
 ```bash
-git clone https://github.com/LeszkovszkiAnita/claude-voice-mcp.git
-cd claude-voice-mcp
+git clone https://github.com/LeszkovszkiAnita/spoken-mcp.git
+cd spoken-mcp
 ```
 
 **Option B — Manual download:**
-Download the ZIP from GitHub, extract it to a folder (e.g., `C:\Users\YourName\Desktop\claude-voice-mcp`).
+Download the ZIP from GitHub, extract it to a folder (e.g., `C:\Users\YourName\Desktop\spoken-mcp`).
 
 ### Step 2: Install Python dependencies
 
@@ -176,19 +176,19 @@ This tells Claude Desktop about the `speak` tool so Claude can use it.
 ```json
 {
   "mcpServers": {
-    "claude-voice-mcp": {
+    "spoken-mcp": {
       "command": "python",
-      "args": ["C:\\full\\path\\to\\claude-voice-mcp\\tts_server.py"]
+      "args": ["C:\\full\\path\\to\\spoken-mcp\\tts_server.py"]
     }
   }
 }
 ```
 
-**Important:** Replace `C:\\full\\path\\to\\claude-voice-mcp\\tts_server.py` with the actual path to the file on your computer. Use **double backslashes** (`\\`) in the path.
+**Important:** Replace `C:\\full\\path\\to\\spoken-mcp\\tts_server.py` with the actual path to the file on your computer. Use **double backslashes** (`\\`) in the path.
 
 For example, if you put the project on your Desktop:
 ```json
-"args": ["C:\\Users\\YourName\\Desktop\\claude-voice-mcp\\tts_server.py"]
+"args": ["C:\\Users\\YourName\\Desktop\\spoken-mcp\\tts_server.py"]
 ```
 
 > **Tip:** If the `python` command doesn't work, use the full Python path instead, e.g., `"command": "C:\\Python312\\python.exe"`. You can find yours by running `where python` in a terminal.
@@ -216,7 +216,7 @@ A system tray icon will appear near your clock (you may need to click the `^` ar
 You can create a desktop shortcut that launches the companion with a single double-click — no console window, with start/stop/restart buttons.
 
 1. Right-click on your Desktop → **New** → **Text Document**
-2. Name it `Voice Bridge.vbs` (make sure the extension is `.vbs`, not `.vbs.txt` — you may need to enable "Show file extensions" in Windows Explorer)
+2. Name it `Spoken MCP.vbs` (make sure the extension is `.vbs`, not `.vbs.txt` — you may need to enable "Show file extensions" in Windows Explorer)
 3. Right-click the file → **Edit** (or open with Notepad)
 4. Paste the following content, replacing the paths with your actual Python and script locations:
 
@@ -225,7 +225,7 @@ Set WshShell = CreateObject("WScript.Shell")
 Set fso = CreateObject("Scripting.FileSystemObject")
 
 pythonExe = "C:\Python312\python.exe"
-scriptPath = "C:\Users\YourName\Desktop\claude-voice-mcp\stt_companion.py"
+scriptPath = "C:\Users\YourName\Desktop\spoken-mcp\stt_companion.py"
 
 ' Check if companion is already running
 Set objWMI = GetObject("winmgmts:\\.\root\cimv2")
@@ -234,18 +234,18 @@ Set processes = objWMI.ExecQuery("SELECT * FROM Win32_Process WHERE CommandLine 
 alreadyRunning = (processes.Count > 0)
 
 If alreadyRunning Then
-    msg = "Voice Bridge is running!" & vbCrLf & vbCrLf & _
+    msg = "Spoken MCP is running!" & vbCrLf & vbCrLf & _
           "STOP = Abort button" & vbCrLf & _
           "RESTART = Retry button" & vbCrLf & _
           "KEEP RUNNING = Ignore button"
-    result = MsgBox(msg, vbAbortRetryIgnore + vbQuestion, "Voice Bridge")
+    result = MsgBox(msg, vbAbortRetryIgnore + vbQuestion, "Spoken MCP")
 
     If result = vbAbort Then
         ' STOP
         For Each proc In processes
             proc.Terminate()
         Next
-        MsgBox "Voice Bridge stopped.", vbInformation, "Voice Bridge"
+        MsgBox "Spoken MCP stopped.", vbInformation, "Spoken MCP"
     ElseIf result = vbRetry Then
         ' RESTART
         For Each proc In processes
@@ -253,18 +253,18 @@ If alreadyRunning Then
         Next
         WScript.Sleep 1000
         WshShell.Run """" & pythonExe & """ """ & scriptPath & """", 0, False
-        MsgBox "Voice Bridge restarted!", vbInformation, "Voice Bridge"
+        MsgBox "Spoken MCP restarted!", vbInformation, "Spoken MCP"
     End If
 Else
     WshShell.Run """" & pythonExe & """ """ & scriptPath & """", 0, False
-    MsgBox "Voice Bridge started!" & vbCrLf & vbCrLf & _
+    MsgBox "Spoken MCP started!" & vbCrLf & vbCrLf & _
            "Look for the icon in the system tray (near the clock)." & vbCrLf & _
            "Double-click this shortcut again to stop or restart.", _
-           vbInformation, "Voice Bridge"
+           vbInformation, "Spoken MCP"
 End If
 ```
 
-5. Save and close. Now double-click `Voice Bridge.vbs` to launch!
+5. Save and close. Now double-click `Spoken MCP.vbs` to launch!
 
 **How the shortcut works:**
 - **First launch:** Starts the companion in the background (no console window) and shows a confirmation
@@ -303,7 +303,7 @@ End If
 ## File Structure
 
 ```
-claude-voice-mcp/
+spoken-mcp/
 ├── README.md              — This file (English)
 ├── README_HU.md           — Hungarian documentation
 ├── LICENSE                 — MIT License
@@ -349,12 +349,6 @@ claude-voice-mcp/
 | Multiple instances running | The companion has built-in single-instance protection. Kill all `python.exe` processes and restart |
 | `webrtcvad` install fails | Use `pip install webrtcvad-wheels` instead |
 | `keyboard` library needs admin | This project uses `pynput` instead — no admin rights needed |
-
----
-
-## Credits
-
-The entire codebase — both Python scripts, configuration, documentation, and project architecture — was designed and written by Claude through [Claude Code](https://claude.ai/claude-code), Anthropic's agentic coding tool.
 
 ---
 
