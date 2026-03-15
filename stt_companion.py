@@ -423,7 +423,7 @@ def start_vad_listener(always_on=False):
     silence_timeout = vad_config.get("silence_timeout", 1.5)
     speech_threshold = vad_config.get("speech_threshold", 3)
     # Minimum volume threshold — filters out distant sounds (TV, background chatter)
-    volume_threshold = vad_config.get("volume_threshold", 800)
+    volume_threshold = vad_config.get("volume_threshold", 500)
     # Minimum recording length in seconds — filters out breathing, coughing, etc.
     min_duration = vad_config.get("min_duration", 0.5)
 

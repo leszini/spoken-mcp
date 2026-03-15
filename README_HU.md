@@ -144,7 +144,7 @@ pip install -r requirements.txt
     "aggressiveness": 2,
     "silence_timeout": 3.0,
     "speech_threshold": 3,
-    "volume_threshold": 800,
+    "volume_threshold": 500,
     "min_duration": 0.5
   },
   "auto_paste": true,
@@ -293,7 +293,7 @@ End If
 | `vad.aggressiveness` | WebRTC VAD érzékenysége: 0 (legkevésbé) – 3 (leginkább agresszív) | `2` |
 | `vad.silence_timeout` | Csend másodpercben a felvétel befejezéséig | `3.0` |
 | `vad.speech_threshold` | Minimum egymást követő beszédkeretek a felvétel indításához | `3` |
-| `vad.volume_threshold` | Minimális hangerő szint beszédnek (0 = kikapcsolva) | `800` |
+| `vad.volume_threshold` | Minimális hangerő szint beszédnek (0 = kikapcsolva) | `500` |
 | `vad.min_duration` | Minimális felvételi hossz másodpercben (kiszűri a köhögést, lélegzést) | `0.5` |
 | `auto_paste` | Átírás automatikus beillesztése az aktív ablakba | `true` |
 | `auto_enter` | Enter automatikus megnyomása beillesztés után (kihangosított mód) | `false` |
