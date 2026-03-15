@@ -10,6 +10,7 @@ import json
 import sys
 import os
 import tempfile
+import time
 import threading
 from pathlib import Path
 
@@ -82,10 +83,9 @@ def speak(text: str, voice: str | None = None) -> str:
                     )
 
                     # Collect audio
-                    audio_bytes = b""
-                    for chunk in audio_stream:
-                        if isinstance(chunk, bytes):
-                            audio_bytes += chunk
+                    audio_bytes = b"".join(
+                        chunk for chunk in audio_stream if isinstance(chunk, bytes)
+                    )
 
                     if audio_bytes:
                         _play_audio_mp3(audio_bytes)
@@ -118,6 +118,7 @@ def _play_audio_mp3(audio_bytes: bytes):
         while pygame.mixer.music.get_busy():
             pygame.time.wait(100)
         pygame.mixer.music.unload()
+        time.sleep(0.1)  # Give Windows time to release the file handle
     except Exception as e:
         print(f"Playback error: {e}", file=sys.stderr)
     finally:

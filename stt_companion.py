@@ -160,6 +160,14 @@ def stop_recording():
     time.sleep(0.15)  # Wait for record_loop to finish its last read
     print("⏹️ Recording stopped, transcribing...", file=sys.stderr)
 
+    # If transcription is already running, don't start a new one
+    if transcribing:
+        print("⏭️ Transcription already in progress, skipped.", file=sys.stderr)
+        if tray_icon:
+            tray_icon.icon = load_icon("idle")
+            tray_icon.title = "Spoken MCP — Ready"
+        return
+
     # Reset tray icon to grey
     if tray_icon:
         tray_icon.icon = load_icon("idle")
